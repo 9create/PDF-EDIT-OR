@@ -1,27 +1,64 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>PDF Editor</title>
-    <script src="https://pdftron.s3.amazonaws.com/webviewer/lib/webviewer.min.js"></script>
-    <style>
-      html, body, #viewer {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        width: 100%;
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nitu PDF Editor (Mobile Friendly)</title>
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 15px;
+      background-color: #f4f4f4;
+      text-align: center;
+    }
+    input, button {
+      margin: 10px;
+      padding: 10px;
+      width: 90%;
+      max-width: 400px;
+    }
+  </style>
+</head>
+<body>
+  <h2>📄 Nitu Live PDF Editor</h2>
+  <input type="file" id="pdfFile" accept="application/pdf" /> <br>
+  <input type="text" id="editText" placeholder="Enter text to insert..." /> <br>
+  <button onclick="editPDF()">Insert Text & Download</button>  <script>
+    async function editPDF() {
+      const fileInput = document.getElementById('pdfFile');
+      const textToAdd = document.getElementById('editText').value;
+
+      if (!fileInput.files[0] || !textToAdd) {
+        alert('Please select a PDF and enter some text.');
+        return;
       }
-    </style>
-  </head>
-  <body>
-    <div id="viewer"></div>
-    <script>
-      WebViewer({
-        path: 'https://pdftron.s3.amazonaws.com/webviewer/lib',
-        initialDoc: 'https://pdftron.s3.amazonaws.com/downloads/pl/demo-annotated.pdf',
-      }, document.getElementById('viewer'))
-      .then(instance => {
-        console.log('PDF Editor loaded');
-      });
-    </script>
-  </body>
+
+      const reader = new FileReader();
+      reader.readAsArrayBuffer(fileInput.files[0]);
+
+      reader.onload = async () => {
+        const existingPdfBytes = reader.result;
+        const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+        const pages = pdfDoc.getPages();
+        const firstPage = pages[0];
+        const { width, height } = firstPage.getSize();
+
+        const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+        firstPage.drawText(textToAdd, {
+          x: 50,
+          y: height - 50,
+          size: 14,
+          font: font,
+          color: PDFLib.rgb(0, 0, 0)
+        });
+
+        const pdfBytes = await pdfDoc.save();
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'edited.pdf';
+        link.click();
+      }
+    }
+  </script></body>
 </html>
