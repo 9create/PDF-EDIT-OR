@@ -1,17 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>PDF Editor</title>
-</head>
-<body>
-  <h2>PDF Editor</h2>
-  <input type="file" id="fileInput" accept="application/pdf" />
-  <br><br>
-  <button id="downloadBtn">Download Edited PDF</button>
-
-  <!-- Libraries -->
-  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
-  <script src="script.js"></script>
-</body>
+<html>
+  <head>
+    <title>Advanced PDF Editor</title>
+    <script src="https://pdftron.s3.amazonaws.com/webviewer/lib/webviewer.min.js"></script>
+    <style>
+      html, body, #viewer {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="viewer"></div>
+    <script>
+      WebViewer({
+        path: 'https://pdftron.s3.amazonaws.com/webviewer/lib',
+        initialDoc: '', // User will upload their PDF
+      }, document.getElementById('viewer'))
+    </script>
+  </body>
 </html>
