@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Advanced PDF Editor</title>
+    <title>PDF Editor</title>
     <script src="https://pdftron.s3.amazonaws.com/webviewer/lib/webviewer.min.js"></script>
     <style>
       html, body, #viewer {
-        height: 100%;
         margin: 0;
         padding: 0;
+        height: 100%;
+        width: 100%;
       }
     </style>
   </head>
@@ -16,8 +17,11 @@
     <script>
       WebViewer({
         path: 'https://pdftron.s3.amazonaws.com/webviewer/lib',
-        initialDoc: '', // User will upload their PDF
+        initialDoc: 'https://pdftron.s3.amazonaws.com/downloads/pl/demo-annotated.pdf',
       }, document.getElementById('viewer'))
+      .then(instance => {
+        console.log('PDF Editor loaded');
+      });
     </script>
   </body>
 </html>
